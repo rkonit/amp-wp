@@ -19,19 +19,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Get npm cache directory
-        id: npm-cache
-        run: echo "::set-output name=dir::$(npm config get cache)"
-
       - name: Configure npm cache
+        id: npm-cache
         uses: actions/cache@v2
         with:
-          path: ${{ steps.npm-cache.outputs.dir }}
+          path: node_modules
           key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-npm-
 
-      - name: Install Node dependencies
+      - name: Install npm dependencies
+        if: steps.npm-cache.outputs.cache-hit != 'true'
         run: npm ci
         env:
           CI: true
@@ -48,19 +44,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Get npm cache directory
-        id: npm-cache
-        run: echo "::set-output name=dir::$(npm config get cache)"
-
       - name: Configure npm cache
+        id: npm-cache
         uses: actions/cache@v2
         with:
-          path: ${{ steps.npm-cache.outputs.dir }}
+          path: node_modules
           key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-npm-
 
-      - name: Install Node dependencies
+      - name: Install npm dependencies
+        if: steps.npm-cache.outputs.cache-hit != 'true'
         run: npm ci
         env:
           CI: true
@@ -102,19 +94,15 @@ jobs:
           coverage: none
           tools: cs2pr
 
-      - name: Get Composer Cache Directory
-        id: composer-cache
-        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
-
       - name: Configure Composer cache
+        id: composer-cache
         uses: actions/cache@v2
         with:
-          path: ${{ steps.composer-cache.outputs.dir }}
+          path: vendor
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-composer-
 
       - name: Install Composer dependencies
+        if: steps.composer-cache.outputs.cache-hit != 'true'
         run: composer install --prefer-dist --optimize-autoloader --no-progress --no-interaction
 
       - name: Validate composer.json
@@ -144,19 +132,15 @@ jobs:
           php-version: 7.4
           extensions: dom, iconv, json, libxml, zip
 
-      - name: Get Composer Cache Directory
-        id: composer-cache
-        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
-
       - name: Configure Composer cache
+        id: composer-cache
         uses: actions/cache@v2
         with:
-          path: ${{ steps.composer-cache.outputs.dir }}
+          path: vendor
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-composer-
 
       - name: Install Composer dependencies
+        if: steps.composer-cache.outputs.cache-hit != 'true'
         run: composer install
 
       - name: Static Analysis (PHPStan)
@@ -172,17 +156,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Get npm cache directory
-        id: npm-cache
-        run: echo "::set-output name=dir::$(npm config get cache)"
-
       - name: Configure npm cache
+        id: npm-cache
         uses: actions/cache@v2
         with:
-          path: ${{ steps.npm-cache.outputs.dir }}
+          path: node_modules
           key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-npm-
 
       - name: Setup Jest cache
         uses: actions/cache@v2
@@ -191,6 +170,7 @@ jobs:
           key: ${{ runner.os }}-jest
 
       - name: Install Node dependencies
+        if: steps.npm-cache.outputs.cache-hit != 'true'
         run: npm ci
         env:
           CI: true
@@ -215,36 +195,28 @@ jobs:
         with:
           php-version: '7.4'
 
-      - name: Get Composer Cache Directory
-        id: composer-cache
-        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
-
       - name: Configure Composer cache
+        id: composer-cache
         uses: actions/cache@v2
         with:
-          path: ${{ steps.composer-cache.outputs.dir }}
+          path: vendor
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-composer-
-
-      - name: Get npm cache directory
-        id: npm-cache
-        run: echo "::set-output name=dir::$(npm config get cache)"
 
       - name: Configure npm cache
+        id: npm-cache
         uses: actions/cache@v2
         with:
-          path: ${{ steps.npm-cache.outputs.dir }}
+          path: node_modules
           key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-npm-
 
       - name: Install Node dependencies
+        if: steps.npm-cache.outputs.cache-hit != 'true'
         run: npm ci
         env:
           CI: true
 
       - name: Install Composer dependencies
+        if: steps.composer-cache.outputs.cache-hit != 'true'
         run: composer install --prefer-dist --optimize-autoloader --no-progress --no-interaction
 
       - name: Build plugin
@@ -349,34 +321,26 @@ jobs:
             sleep 1
           done
 
-      - name: Get Composer Cache Directory
-        id: composer-cache
-        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
-
       - name: Configure Composer cache
+        id: composer-cache
         uses: actions/cache@v2
         with:
-          path: ${{ steps.composer-cache.outputs.dir }}
+          path: vendor
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-composer-
 
       - name: Install Composer dependencies
+        if: steps.composer-cache.outputs.cache-hit != 'true'
         run: composer install --prefer-dist --ignore-platform-reqs --no-progress --no-interaction
 
-      - name: Get npm cache directory
-        id: npm-cache
-        run: echo "::set-output name=dir::$(npm config get cache)"
-
       - name: Configure npm cache
+        id: npm-cache
         uses: actions/cache@v2
         with:
-          path: ${{ steps.npm-cache.outputs.dir }}
+          path: node_modules
           key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-npm-
 
       - name: Install Node dependencies
+        if: steps.npm-cache.outputs.cache-hit != 'true'
         run: npm ci
         env:
           CI: true
@@ -454,38 +418,28 @@ jobs:
         with:
           php-version: '7.4'
 
-      - name: Get Composer Cache Directory
-        id: composer-cache
-        run: |
-          echo "::set-output name=dir::$(composer config cache-files-dir)"
-
       - name: Configure Composer cache
+        id: composer-cache
         uses: actions/cache@v2
         with:
-          path: ${{ steps.composer-cache.outputs.dir }}
+          path: vendor
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-composer-
 
       - name: Install Composer dependencies
+        if: steps.composer-cache.outputs.cache-hit != 'true'
         # Scripts are not ignored as they are needed to apply patches for the
         # `sabberworm/php-css-parser` dependency.
         run: composer install --prefer-dist --optimize-autoloader
 
-      - name: Get npm cache directory
-        id: npm-cache
-        run: |
-          echo "::set-output name=dir::$(npm config get cache)"
-
       - name: Configure npm cache
+        id: npm-cache
         uses: actions/cache@v2
         with:
-          path: ${{ steps.npm-cache.outputs.dir }}
+          path: node_modules
           key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-npm-
 
       - name: Install Node dependencies
+        if: steps.npm-cache.outputs.cache-hit != 'true'
         run: npm ci
         env:
           CI: true
